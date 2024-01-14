@@ -1,0 +1,53 @@
+$square: 2rem;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  &_menu {
+    display: flex;
+    flex-direction: row;
+    margin:auto;
+      &_button {
+        background: none;
+        border: none;
+        padding: 1rem;
+        margin: 1rem 2rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: rgba(128, 29, 70, 0.5) 0px 8px 24px;
+        border-radius: 4px;
+      }
+    &_title {
+      font-size: 3rem;
+      margin: auto;
+    }
+  }
+  &_game {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    border: 1px solid black;
+    box-shadow: rgb(0, 0, 0.5) 0px 8px 24px;
+    &_row {
+      display: flex;
+      flex-direction: row;
+      &_item {
+        border: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        height: $square;
+        width: $square;
+      }
+    }
+  }
+  &_score{
+    display: flex;
+    margin: auto;
+    padding: 1.5rem;
+    font-size: 2rem;
+  }
+}
+.filled {
+  background: black;
+}
