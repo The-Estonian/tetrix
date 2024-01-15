@@ -12,17 +12,15 @@ const Menu = () => {
   nameContainer.classList = 'container_menu_title';
   nameContainer.innerHTML = 'TetriX';
   //   new game
-  let newGameContainer = document.createElement('a');
-  newGameContainer.setAttribute('href', '/');
+  let newGameContainer = document.createElement('button');
   newGameContainer.textContent = 'New Game';
   newGameContainer.classList = 'container_menu_button';
-
   //   append menu
 //   menuContainer.appendChild(continueGameContainer);
   menuContainer.appendChild(nameContainer);
   menuContainer.appendChild(newGameContainer);
   root.appendChild(menuContainer);
-  return menuContainer;
+  return [menuContainer, newGameContainer];
 };
 
 export default Menu;

@@ -5,11 +5,20 @@ console.log('Engine start!');
 let root = document.querySelector('#root');
 root.classList = 'container';
 
-root.appendChild(Menu());
-root.appendChild(Game("start"));
-root.appendChild(Score(0));
+const [container, newGame] = Menu();
+const score = Score(0);
+let grid = Game('Wait');
+root.appendChild(container);
+root.appendChild(grid);
+root.appendChild(score);
 
-
+newGame.addEventListener('click', () => {
+  root.removeChild(grid);
+  root.removeChild(score);
+  grid = Game('Start');
+  root.appendChild(grid);
+  root.appendChild(score);
+});
 // let reqAnimationId;
 // let counter = 0;
 // function smoothAnimation() {

@@ -1,17 +1,12 @@
-import { GameGrid } from './gameIcons.js';
-
 export const Grid = () => {
   let gridContainer = document.createElement('div');
   gridContainer.classList = 'container_game';
-  for (let i = 0; i < GameGrid.length; i++) {
+  for (let i = 0; i < 20; i++) {
     let gameConsoleRow = document.createElement('div');
     gameConsoleRow.classList = 'container_game_row';
-    for (let j = 0; j < GameGrid[i].length; j++) {
+    for (let j = 0; j < 10; j++) {
       let gameConsoleItem = document.createElement('span');
       gameConsoleItem.classList = 'container_game_row_item';
-      if (GameGrid[i][j] !== 0) {
-        gameConsoleItem.classList.add('filled');
-      }
       gameConsoleItem.innerHTML = '';
       gameConsoleRow.appendChild(gameConsoleItem);
     }
