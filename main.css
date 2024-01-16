@@ -8,14 +8,38 @@
   margin: auto;
 }
 .container_menu_button {
+  position: relative;
   background: none;
   border: none;
   padding: 1rem;
   margin: 1rem 2rem;
+  margin-right: 0;
   font-size: 1.5rem;
   cursor: pointer;
   box-shadow: rgba(128, 29, 70, 0.5) 0px 8px 24px;
   border-radius: 4px;
+}
+.container_menu_button_continue {
+  top: 10rem;
+  display: flex;
+  margin: 0.5rem;
+  font-size: 2rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.container_menu_button_continue_button {
+  background: none;
+  border: none;
+  padding: 1rem;
+  margin: auto;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: rgba(128, 29, 70, 0.5) 0px 8px 24px;
+  border-radius: 4px;
+}
+.container_menu_button_continue a {
+  text-decoration: none;
+  color: inherit;
 }
 .container_menu_title {
   font-size: 3rem;
@@ -53,4 +77,40 @@
 
 .hidden {
   background: rgb(255, 192, 192);
+}
+
+.red {
+  background: red;
+}
+
+.orange {
+  background: orange;
+}
+
+.yellow {
+  background: yellow;
+}
+
+.green {
+  background: green;
+}
+
+.blue {
+  background: blue;
+}
+
+.indigo {
+  background: indigo;
+}
+
+.violet {
+  background: violet;
+}
+
+.white {
+  background: white;
+}
+
+.black {
+  background: black;
 }/*# sourceMappingURL=main.css.map */

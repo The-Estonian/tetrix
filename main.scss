@@ -8,14 +8,38 @@ $square: 1.8rem;
     flex-direction: row;
     margin: auto;
     &_button {
+      position: relative;
       background: none;
       border: none;
       padding: 1rem;
       margin: 1rem 2rem;
+      margin-right: 0;
       font-size: 1.5rem;
       cursor: pointer;
       box-shadow: rgba(128, 29, 70, 0.5) 0px 8px 24px;
       border-radius: 4px;
+      &_continue {
+        top: 10rem;
+        display: flex;
+        margin: 0.5rem;
+        font-size: 2rem;
+        cursor: pointer;
+        border-radius: 4px;
+        &_button {
+          background: none;
+          border: none;
+          padding: 1rem;
+          margin: auto;
+          font-size: 1.5rem;
+          cursor: pointer;
+          box-shadow: rgba(128, 29, 70, 0.5) 0px 8px 24px;
+          border-radius: 4px;
+        }
+        a {
+          text-decoration: none;
+          color: inherit;
+        }
+      }
     }
     &_title {
       font-size: 3rem;
@@ -54,4 +78,41 @@ $square: 1.8rem;
 }
 .hidden {
   background: rgb(255, 192, 192);
+}
+
+// colors
+.red {
+  background: red;
+}
+
+.orange {
+  background: orange;
+}
+
+.yellow {
+  background: yellow;
+}
+
+.green {
+  background: green;
+}
+
+.blue {
+  background: blue;
+}
+
+.indigo {
+  background: indigo;
+}
+
+.violet {
+  background: violet;
+}
+
+.white {
+  background: white;
+}
+
+.black {
+  background: black;
 }
