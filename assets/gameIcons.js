@@ -30,7 +30,7 @@ const iconZ2 = [14, 15, 25, 26];
 
 export const IconZ = [iconZ1, iconZ2, iconZ1, iconZ2];
 
-const iconJ1 = [, 5, 15, 24, 25];
+const iconJ1 = [5, 15, 24, 25];
 const iconJ2 = [14, 24, 25, 26];
 const iconJ3 = [4, 5, 14, 24];
 const iconJ4 = [14, 15, 16, 26];

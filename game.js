@@ -1,9 +1,13 @@
 import { Grid } from './assets/buildGrid.js';
 import { IconPool } from './assets/gameIcons.js';
+import Score from './score.js';
+
 const Game = (engine) => {
   let grid = Grid();
-  const allBoxes = grid.querySelectorAll('.container_game_row_item');
-
+  let allBoxes = grid.querySelectorAll('.container_game_row_item');
+  let allRows = grid.querySelectorAll('.container_game_row');
+  const scoreElement = document.createElement('div');
+  const clockElement = document.createElement('div');
   const colorList = [
     'red',
     'orange',
@@ -19,15 +23,23 @@ const Game = (engine) => {
   let tick = 0;
   let coordX = 0;
   let coordY = 0;
-  let tickSpeed = 400;
+  let defaulttickSpeed = 400
+  let tickSpeed = defaulttickSpeed;
+  let clockTick = 0;
+  let score = 0;
   let middlemanX = coordX;
   let middlemanY = coordY;
   let middlemanSide = side;
   let randomIcon = IconPool[Math.floor(Math.random() * 7)];
   let randomColor = colorList[Math.floor(Math.random() * 7)];
+  let menuOpen = false;
+  let tetroFreeze = false;
+
+  window.onblur = function () {
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+  };
 
   window.addEventListener('keydown', (e) => {
-    console.log(e.key);
     if (e.key == 'ArrowLeft') {
       // console.log((randomIcon[side][0] - 1 + coordY) % 10);
       coordY--;
@@ -47,13 +59,14 @@ const Game = (engine) => {
       } else {
         side = 0;
       }
-    } else if (e.key == 'Escape') {
+    } else if (e.key == 'Escape' && !menuOpen) {
+      menuOpen = true;
       cancelAnimationFrame(running);
 
       // menu container
       let menuContinue = document.createElement('div');
       menuContinue.classList = 'container_menu_button_continue';
-      
+
       // continue
       let gameContinue = document.createElement('button');
       gameContinue.innerHTML = 'Continue';
@@ -62,6 +75,10 @@ const Game = (engine) => {
       gameContinue.addEventListener('click', () => {
         requestAnimationFrame(refresh);
         grid.removeChild(menuContinue);
+        menuOpen = false;
+        allBoxes.forEach((e) => {
+          e.classList.remove('fade');
+        });
       });
       // restart
       let gameRestart = document.createElement('a');
@@ -69,7 +86,10 @@ const Game = (engine) => {
       gameRestart.classList = 'container_menu_button_continue_button';
       gameRestart.href = '/';
       menuContinue.appendChild(gameRestart);
-      grid.appendChild(menuContinue);
+      allBoxes.forEach((e) => {
+        e.classList.add('fade');
+      });
+      grid.insertBefore(menuContinue, grid.firstChild);
     }
   });
 
@@ -80,7 +100,6 @@ const Game = (engine) => {
     tick = 0;
     coordX = 0;
     coordY = 0;
-    tickSpeed = 400;
     middlemanX = coordX;
     middlemanY = coordY;
     middlemanSide = side;
@@ -91,18 +110,69 @@ const Game = (engine) => {
   // animation start
   const refresh = () => {
     // slow tick
+    if (tick == 60) {
+      clockTick++;
+      scoreElement.innerHTML = 'Score: ' + score;
+      clockElement.innerHTML = 'Time: ' + clockTick;
+    }
     if (tick == tickSpeed) {
       tick = 0;
       coordX += 10;
     }
 
+    // check sides
+    if (middlemanY != coordY) {
+    }
+
+    // check bottom
     if (middlemanX != coordX) {
-      randomIcon[side].forEach((i) => {
-        if (i + coordX >= 200) {
+      for (let i = 0; i < randomIcon[side].length; i++) {
+        if (
+          randomIcon[side][i] + coordX >= 200 ||
+          allBoxes[randomIcon[side][i] + coordX + coordY].classList.contains(
+            'freeze'
+          )
+        ) {
           console.log('X axis breached!');
+          for (let j = 0; j < randomIcon[side].length; j++) {
+            allBoxes[
+              randomIcon[side][j] + middlemanX + middlemanY
+            ].classList.add('freeze');
+          }
+          // check rows for deletion and scoring
+          for (let i = 0; i < 20; i++) {
+            let boxCounter = 0;
+            for (let j = 0; j < 10; j++) {
+              console.log('iteration');
+              if (allBoxes[i * 10 + j].classList.contains('freeze')) {
+                boxCounter++;
+              } else {
+                break;
+              }
+              if (boxCounter == 10) {
+                score++;
+                tickSpeed-=10
+                grid.removeChild(allRows[i]);
+                // create new row
+                let gameConsoleRow = document.createElement('div');
+                gameConsoleRow.classList = 'container_game_row';
+                for (let j = 0; j < 10; j++) {
+                  let gameConsoleItem = document.createElement('span');
+                  gameConsoleItem.classList = 'container_game_row_item';
+                  gameConsoleItem.innerHTML = '';
+                  gameConsoleRow.appendChild(gameConsoleItem);
+                }
+                grid.insertBefore(gameConsoleRow, grid.childNodes[1]);
+                allBoxes = grid.querySelectorAll('.container_game_row_item');
+                allRows = grid.querySelectorAll('.container_game_row');
+              }
+            }
+          }
+          // create new tetro if previos locks down
           newTetro();
+          break;
         }
-      });
+      }
     }
     if (
       middlemanX != coordX ||
@@ -110,18 +180,39 @@ const Game = (engine) => {
       middlemanSide != side ||
       coordX == 0
     ) {
-      randomIcon[middlemanSide].forEach((i) => {
-        allBoxes[i + middlemanX + middlemanY].classList.remove('filled');
-        allBoxes[i + middlemanX + middlemanY].classList.remove(randomColor);
-      });
-      randomIcon[side].forEach((i) => {
-        // console.log(i + coordX + coordY);
-        allBoxes[i + coordX + coordY].classList.add('filled');
-        allBoxes[i + coordX + coordY].classList.add(randomColor);
-      });
-      middlemanX = coordX;
-      middlemanY = coordY;
-      middlemanSide = side;
+      for (let i = 0; i < randomIcon[side].length; i++) {
+        if (
+          allBoxes[randomIcon[side][i] + coordX + coordY].classList.contains(
+            'freeze'
+          )
+        ) {
+          console.log('Freezing!');
+          tetroFreeze = true;
+          newTetro();
+        }
+      }
+
+      if (!tetroFreeze) {
+        randomIcon[middlemanSide].forEach((i) => {
+          allBoxes[i + middlemanX + middlemanY].classList.remove('filled');
+          allBoxes[i + middlemanX + middlemanY].classList.remove(randomColor);
+        });
+
+        randomIcon[side].forEach((i) => {
+          if (allBoxes[i + coordX + coordY].classList.contains('filled')) {
+            allBoxes[i + middlemanX + middlemanY].classList.add('filled');
+            allBoxes[i + middlemanX + middlemanY].classList.add(randomColor);
+          } else {
+            allBoxes[i + coordX + coordY].classList.add('filled');
+            allBoxes[i + coordX + coordY].classList.add(randomColor);
+          }
+        });
+
+        middlemanX = coordX;
+        middlemanY = coordY;
+        middlemanSide = side;
+      }
+      tetroFreeze = false;
     }
     // fast tick
     tick++;
@@ -130,6 +221,10 @@ const Game = (engine) => {
   if (engine == 'Start') {
     running = requestAnimationFrame(refresh);
   }
+
+  grid.appendChild(scoreElement);
+  grid.appendChild(clockElement);
+
   return grid;
 };
 
