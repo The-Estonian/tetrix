@@ -1,39 +1,25 @@
 import { Grid } from './assets/buildGrid.js';
-import { IconPool } from './assets/gameIcons.js';
-import Score from './score.js';
+import { NewElement } from '../helper.js';
+import { newTetro } from './newTetro.js';
 
-const Game = (engine) => {
+export const Game = (engine) => {
   let grid = Grid();
   let allBoxes = grid.querySelectorAll('.container_game_row_item');
   let allRows = grid.querySelectorAll('.container_game_row');
-  const scoreElement = document.createElement('div');
-  const clockElement = document.createElement('div');
-  const colorList = [
-    'red',
-    'orange',
-    'yellow',
-    'green',
-    'blue',
-    'indigo',
-    'violet',
-    'black',
-  ];
-  let side = 0;
+  const scoreElement = NewElement('div');
+  const clockElement = NewElement('div');
+
   let running;
-  let tick = 0;
-  let coordX = 0;
-  let coordY = 0;
-  let defaulttickSpeed = 400
+  let defaulttickSpeed = 60;
   let tickSpeed = defaulttickSpeed;
-  let clockTick = 0;
   let score = 0;
-  let middlemanX = coordX;
-  let middlemanY = coordY;
-  let middlemanSide = side;
-  let randomIcon = IconPool[Math.floor(Math.random() * 7)];
-  let randomColor = colorList[Math.floor(Math.random() * 7)];
+  let tick = 0;
+  let clockTick = 0;
   let menuOpen = false;
   let tetroFreeze = false;
+  let second = 0;
+
+  let currentTetro = newTetro();
 
   window.onblur = function () {
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
@@ -41,36 +27,44 @@ const Game = (engine) => {
 
   window.addEventListener('keydown', (e) => {
     if (e.key == 'ArrowLeft') {
-      // console.log((randomIcon[side][0] - 1 + coordY) % 10);
-      coordY--;
-      if ((randomIcon[side][0] % 10) + coordY < 0) {
-        coordY++;
+      currentTetro.coordY--;
+      if (
+        (currentTetro.randomIcon[currentTetro.side][0] % 10) +
+          currentTetro.coordY <
+        0
+      ) {
+        currentTetro.coordY++;
       }
     } else if (e.key == 'ArrowRight') {
-      coordY++;
-      if ((randomIcon[side][3] % 10) + coordY > 9) {
-        coordY--;
+      currentTetro.coordY++;
+      if (
+        (currentTetro.randomIcon[currentTetro.side][3] % 10) +
+          currentTetro.coordY >
+        9
+      ) {
+        currentTetro.coordY--;
       }
     } else if (e.key == 'ArrowDown') {
-      coordX += 10;
+      currentTetro.coordX += 10;
     } else if (e.key == 'ArrowUp') {
-      if (side < 3) {
-        side++;
+      if (currentTetro.side < 3) {
+        currentTetro.side++;
       } else {
-        side = 0;
+        currentTetro.side = 0;
       }
     } else if (e.key == 'Escape' && !menuOpen) {
       menuOpen = true;
       cancelAnimationFrame(running);
 
       // menu container
-      let menuContinue = document.createElement('div');
-      menuContinue.classList = 'container_menu_button_continue';
+      let menuContinue = NewElement('div', 'container_menu_button_continue');
 
       // continue
-      let gameContinue = document.createElement('button');
-      gameContinue.innerHTML = 'Continue';
-      gameContinue.classList = 'container_menu_button_continue_button';
+      let gameContinue = NewElement(
+        'button',
+        'container_menu_button_continue_button',
+        'Continue'
+      );
       menuContinue.appendChild(gameContinue);
       gameContinue.addEventListener('click', () => {
         requestAnimationFrame(refresh);
@@ -81,9 +75,11 @@ const Game = (engine) => {
         });
       });
       // restart
-      let gameRestart = document.createElement('a');
-      gameRestart.innerHTML = 'Restart';
-      gameRestart.classList = 'container_menu_button_continue_button';
+      let gameRestart = NewElement(
+        'a',
+        'container_menu_button_continue_button',
+        'Restart'
+      );
       gameRestart.href = '/';
       menuContinue.appendChild(gameRestart);
       allBoxes.forEach((e) => {
@@ -94,56 +90,68 @@ const Game = (engine) => {
   });
 
   // start new tetromino
-  const newTetro = () => {
-    side = 0;
-    running;
-    tick = 0;
-    coordX = 0;
-    coordY = 0;
-    middlemanX = coordX;
-    middlemanY = coordY;
-    middlemanSide = side;
-    randomIcon = IconPool[Math.floor(Math.random() * 7)];
-    randomColor = colorList[Math.floor(Math.random() * 7)];
-  };
 
   // animation start
-  const refresh = () => {
+  const refresh = (timestamp) => {
+    const deltaTime = timestamp - lastTimestamp;
+    if (deltaTime < minFrameTime) {
+      running = requestAnimationFrame(refresh);
+      return;
+    }
     // slow tick
-    if (tick == 60) {
+    if (second == 60) {
       clockTick++;
       scoreElement.innerHTML = 'Score: ' + score;
-      clockElement.innerHTML = 'Time: ' + clockTick;
+      clockElement.innerHTML =
+        'Time: ' +
+        (clockTick < 60
+          ? clockTick + 's'
+          : Math.floor(clockTick / 60) +
+            'm' +
+            (clockTick - Math.floor(clockTick / 60) * 60) +
+            's');
+      second = 0;
     }
-    if (tick == tickSpeed) {
+    if (tick >= tickSpeed) {
       tick = 0;
-      coordX += 10;
+      currentTetro.coordX += 10;
     }
 
     // check sides
-    if (middlemanY != coordY) {
+    if (currentTetro.middlemanY != currentTetro.coordY) {
     }
 
     // check bottom
-    if (middlemanX != coordX) {
-      for (let i = 0; i < randomIcon[side].length; i++) {
+    if (currentTetro.middlemanX != currentTetro.coordX) {
+      for (
+        let i = 0;
+        i < currentTetro.randomIcon[currentTetro.side].length;
+        i++
+      ) {
         if (
-          randomIcon[side][i] + coordX >= 200 ||
-          allBoxes[randomIcon[side][i] + coordX + coordY].classList.contains(
-            'freeze'
-          )
+          currentTetro.randomIcon[currentTetro.side][i] + currentTetro.coordX >=
+            200 ||
+          allBoxes[
+            currentTetro.randomIcon[currentTetro.side][i] +
+              currentTetro.coordX +
+              currentTetro.coordY
+          ].classList.contains('freeze')
         ) {
-          console.log('X axis breached!');
-          for (let j = 0; j < randomIcon[side].length; j++) {
+          for (
+            let j = 0;
+            j < currentTetro.randomIcon[currentTetro.side].length;
+            j++
+          ) {
             allBoxes[
-              randomIcon[side][j] + middlemanX + middlemanY
+              currentTetro.randomIcon[currentTetro.side][j] +
+                currentTetro.middlemanX +
+                currentTetro.middlemanY
             ].classList.add('freeze');
           }
           // check rows for deletion and scoring
           for (let i = 0; i < 20; i++) {
             let boxCounter = 0;
             for (let j = 0; j < 10; j++) {
-              console.log('iteration');
               if (allBoxes[i * 10 + j].classList.contains('freeze')) {
                 boxCounter++;
               } else {
@@ -151,15 +159,18 @@ const Game = (engine) => {
               }
               if (boxCounter == 10) {
                 score++;
-                tickSpeed-=10
+                if (tickSpeed > 10) {
+                  tickSpeed -= 1;
+                  console.log(tickSpeed);
+                }
                 grid.removeChild(allRows[i]);
                 // create new row
-                let gameConsoleRow = document.createElement('div');
-                gameConsoleRow.classList = 'container_game_row';
+                let gameConsoleRow = NewElement('div', 'container_game_row');
                 for (let j = 0; j < 10; j++) {
-                  let gameConsoleItem = document.createElement('span');
-                  gameConsoleItem.classList = 'container_game_row_item';
-                  gameConsoleItem.innerHTML = '';
+                  let gameConsoleItem = NewElement(
+                    'span',
+                    'container_game_row_item'
+                  );
                   gameConsoleRow.appendChild(gameConsoleItem);
                 }
                 grid.insertBefore(gameConsoleRow, grid.childNodes[1]);
@@ -169,55 +180,81 @@ const Game = (engine) => {
             }
           }
           // create new tetro if previos locks down
-          newTetro();
+          currentTetro = newTetro();
           break;
         }
       }
     }
     if (
-      middlemanX != coordX ||
-      middlemanY != coordY ||
-      middlemanSide != side ||
-      coordX == 0
+      currentTetro.middlemanX != currentTetro.coordX ||
+      currentTetro.middlemanY != currentTetro.coordY ||
+      currentTetro.middlemanSide != currentTetro.side ||
+      currentTetro.coordX == 0
     ) {
-      for (let i = 0; i < randomIcon[side].length; i++) {
+      for (
+        let i = 0;
+        i < currentTetro.randomIcon[currentTetro.side].length;
+        i++
+      ) {
         if (
-          allBoxes[randomIcon[side][i] + coordX + coordY].classList.contains(
-            'freeze'
-          )
+          allBoxes[
+            currentTetro.randomIcon[currentTetro.side][i] +
+              currentTetro.coordX +
+              currentTetro.coordY
+          ].classList.contains('freeze')
         ) {
-          console.log('Freezing!');
           tetroFreeze = true;
-          newTetro();
+          currentTetro = newTetro();
         }
       }
 
       if (!tetroFreeze) {
-        randomIcon[middlemanSide].forEach((i) => {
-          allBoxes[i + middlemanX + middlemanY].classList.remove('filled');
-          allBoxes[i + middlemanX + middlemanY].classList.remove(randomColor);
+        currentTetro.randomIcon[currentTetro.middlemanSide].forEach((i) => {
+          allBoxes[
+            i + currentTetro.middlemanX + currentTetro.middlemanY
+          ].classList.remove('filled');
+          allBoxes[
+            i + currentTetro.middlemanX + currentTetro.middlemanY
+          ].classList.remove(currentTetro.randomColor);
         });
 
-        randomIcon[side].forEach((i) => {
-          if (allBoxes[i + coordX + coordY].classList.contains('filled')) {
-            allBoxes[i + middlemanX + middlemanY].classList.add('filled');
-            allBoxes[i + middlemanX + middlemanY].classList.add(randomColor);
+        currentTetro.randomIcon[currentTetro.side].forEach((i) => {
+          if (
+            allBoxes[
+              i + currentTetro.coordX + currentTetro.coordY
+            ].classList.contains('filled')
+          ) {
+            allBoxes[
+              i + currentTetro.middlemanX + currentTetro.middlemanY
+            ].classList.add('filled');
+            allBoxes[
+              i + currentTetro.middlemanX + currentTetro.middlemanY
+            ].classList.add(currentTetro.randomColor);
           } else {
-            allBoxes[i + coordX + coordY].classList.add('filled');
-            allBoxes[i + coordX + coordY].classList.add(randomColor);
+            allBoxes[
+              i + currentTetro.coordX + currentTetro.coordY
+            ].classList.add('filled');
+            allBoxes[
+              i + currentTetro.coordX + currentTetro.coordY
+            ].classList.add(currentTetro.randomColor);
           }
         });
 
-        middlemanX = coordX;
-        middlemanY = coordY;
-        middlemanSide = side;
+        currentTetro.middlemanX = currentTetro.coordX;
+        currentTetro.middlemanY = currentTetro.coordY;
+        currentTetro.middlemanSide = currentTetro.side;
       }
       tetroFreeze = false;
     }
     // fast tick
     tick++;
+    second++;
+    lastTimestamp = timestamp;
     running = requestAnimationFrame(refresh);
+    // }, 1000 / 60);
   };
+  let lastTimestamp = performance.now();
+  const minFrameTime = 1000 / 60;
   if (engine == 'Start') {
     running = requestAnimationFrame(refresh);
   }
@@ -227,5 +264,3 @@ const Game = (engine) => {
 
   return grid;
 };
-
-export default Game;

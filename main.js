@@ -1,6 +1,5 @@
-import Menu from './menu.js';
-import Game from './game.js';
-console.log('Engine start!');
+import { Menu } from './menu.js';
+import { Game } from './game.js';
 let root = document.querySelector('#root');
 root.classList = 'container';
 

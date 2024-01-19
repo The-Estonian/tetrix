@@ -1,26 +1,21 @@
-const Menu = () => {
-  let menuContainer = document.createElement('div');
-  menuContainer.classList = 'container_menu';
-  //   continue game
+import { NewElement } from './helper.js';
 
-//   let continueGameContainer = document.createElement('button');
-//   continueGameContainer.textContent = 'Continue';
-//   continueGameContainer.classList = 'container_menu_button';
+// generate game menu
+export const Menu = () => {
+  let menuContainer = NewElement('div', 'container_menu');
+  // menu container
+  let nameContainer = NewElement('span', 'container_menu_title', 'TetriX');
+  //   new game button
+  let newGameContainer = NewElement(
+    'button',
+    'container_menu_button',
+    'New Game'
+  );
 
-  // name container
-  let nameContainer = document.createElement('span');
-  nameContainer.classList = 'container_menu_title';
-  nameContainer.innerHTML = 'TetriX';
-  //   new game
-  let newGameContainer = document.createElement('button');
-  newGameContainer.textContent = 'New Game';
-  newGameContainer.classList = 'container_menu_button';
-  //   append menu
-//   menuContainer.appendChild(continueGameContainer);
+  //   append menu to root container
   menuContainer.appendChild(nameContainer);
   menuContainer.appendChild(newGameContainer);
-  root.appendChild(menuContainer);
+  // root.appendChild(menuContainer);
   return [menuContainer, newGameContainer];
 };
 
-export default Menu;

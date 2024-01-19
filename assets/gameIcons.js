@@ -13,9 +13,9 @@ export const IconO = [iconO1, iconO1, iconO1, iconO1];
 
 // T
 const iconT1 = [14, 15, 5, 16];
-const iconT2 = [14, 5, 15, 25];
-const iconT3 = [14, 15, 25, 16];
 const iconT4 = [5, 15, 25, 16];
+const iconT3 = [14, 15, 25, 16];
+const iconT2 = [14, 5, 15, 25];
 
 export const IconT = [iconT1, iconT2, iconT3, iconT4];
 
@@ -45,13 +45,3 @@ const iconL4 = [16, 24, 25, 26];
 export const IconL = [iconL1, iconL2, iconL3, iconL4];
 
 export const IconPool = [IconI, IconO, IconT, IconS, IconZ, IconJ, IconL];
-
-// Bomberman
-// Flipper/ Pinball
-// Space Invaders
-// Donkey Kong
-// Brick Breaker/ Arkanoid
-// Pac-Man
-// Super Mario
-// Tetris
-// Duck Hunt
