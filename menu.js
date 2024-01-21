@@ -15,7 +15,6 @@ export const Menu = () => {
   //   append menu to root container
   menuContainer.appendChild(nameContainer);
   menuContainer.appendChild(newGameContainer);
-  // root.appendChild(menuContainer);
   return [menuContainer, newGameContainer];
 };
 

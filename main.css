@@ -47,7 +47,7 @@
 .container_game {
   display: flex;
   flex-direction: column;
-  margin: auto;
+  margin: 1rem auto;
   text-align: center;
   box-shadow: rgb(0, 0, 1) 0px 8px 24px;
 }
@@ -67,8 +67,7 @@
 .container_score {
   display: flex;
   margin: auto;
-  padding: 1.5rem;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .filled {
