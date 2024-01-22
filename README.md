@@ -4,7 +4,7 @@ To audit the program, find the steps [here](https://github.com/01-edu/public/tre
 
 ## Project Description
 
-A close enough game of the popular Tetris
+A close enough version of the popular Tetris game!
 
 Use arrow keys to move the Tetrominoes Left, Right or Down. Use Up arrow to rotate the Tetromino
 
