@@ -2,7 +2,6 @@ import { Grid } from './assets/buildGrid.js';
 import { NewElement } from '../helper.js';
 import { newTetro } from './newTetro.js';
 
-// --------------------------------------------------------------------------------
 // start Game
 export const Game = (engine) => {
   let grid = Grid();
@@ -30,9 +29,7 @@ export const Game = (engine) => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
   };
 
-  // --------------------------------------------------------------------------------
-
-  const HandleMovemement = (e) => {
+  const handleMovemement = (e) => {
     if (e.key == 'ArrowLeft') {
       curr.coordY--;
       if ((curr.randomIcon[curr.side][0] % 10) + curr.coordY < 0) {
@@ -90,16 +87,14 @@ export const Game = (engine) => {
       });
       grid.insertBefore(menuContinue, grid.firstChild);
     }
-    window.removeEventListener('keydown', HandleMovemement);
+    window.removeEventListener('keydown', handleMovemement);
   };
-
-  // --------------------------------------------------------------------------------
 
   // animation start
   const refresh = (timestamp) => {
 
     // keyboard
-    window.addEventListener('keydown', HandleMovemement);
+    window.addEventListener('keydown', handleMovemement);
 
     // set max fps
     const deltaTime = timestamp - lastTimestamp;
@@ -186,12 +181,6 @@ export const Game = (engine) => {
                 curr.middlemanX +
                 curr.middlemanY
             ].classList.add('freeze');
-            // apply X to frozen elements
-            // allBoxes[
-            //   curr.randomIcon[curr.middlemanSide][j] +
-            //     curr.middlemanX +
-            //     curr.middlemanY
-            // ].innerHTML = 'X';
           }
           // check rows for deletion, score and new row
           for (let i = 0; i < 20; i++) {
