@@ -1,6 +1,6 @@
 To audit the program, find the steps [here](https://github.com/01-edu/public/tree/master/subjects/make-your-game/audit)
 
-# Make Your Game
+# Tetrix
 
 ## Project Description
 
@@ -20,10 +20,10 @@ Alternative method is to visit http://tetris.the-estonian.com/
 
 Steps to run the game in your browser:
 ```bash
-git clone https://01.kood.tech/git/jsaar/make-your-game
+git clone https://github.com/The-Estonian/tetrix
 
 Right click on index.html and Show Preview in Visual Studio Code
 
 ```
 
-_<sup>Author: [Jaanus Saar](https://01.kood.tech/git/jsaar)_</sup>
+_<sup>Author: [Jaanus Saar](https://github.com/The-Estonian)_</sup>
