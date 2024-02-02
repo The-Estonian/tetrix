@@ -1,5 +1,3 @@
-To audit the program, find the steps [here](https://github.com/01-edu/public/tree/master/subjects/make-your-game/audit)
-
 # Tetrix
 
 ## Project Description
